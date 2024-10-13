@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
     'core',
     'ckeditor',
     'ckeditor_uploader',
@@ -60,18 +61,29 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'api.urls'
 
 # ниже настройки JWT токена
-LOGIN_URL = "/api/v1/signin"
+LOGIN_URL = "/api/token/"
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=2),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,  # Use your Django SECRET_KEY
+    'VERIFYING_KEY': None,
+    'AUDIENCE': None,
+    'ISSUER': None,
+    'JWK_URL': None,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    # 'AUTH_HEADER_NAME': 'Authorization',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
-CORS_ORIGIN_WHITELIST = ["http://localhost:3000", "http://127.0.0.1:3000"]
-# конец настроек JWT токена
-
-
-#настройки rest framework
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework_simplejwt.authentication.JWTAuthentication"],
@@ -79,6 +91,10 @@ REST_FRAMEWORK = {
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.DjangoModelPermissions",),
 }
+
+CORS_ORIGIN_WHITELIST = ["http://localhost:3000", "http://127.0.0.1:3000"]
+# конец настроек JWT токена
+
 
 TEMPLATES = [
     {
@@ -194,9 +210,9 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'max070730@gmail.com'
 EMAIL_HOST_PASSWORD = 'fbyhgjgtfsorugjx'
 
-REST_FRAMEWORK = {
-    'SEARCH_PARAM': 'q',
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+# REST_FRAMEWORK = {
+#     'SEARCH_PARAM': 'q',
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
 
-        'rest_framework_simplejwt.authentication.JWTAuthentication',)
-}
+#         'rest_framework_simplejwt.authentication.JWTAuthentication',)
+# }

@@ -1,6 +1,7 @@
 export default {
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
+  
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -43,18 +44,46 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    '@nuxtjs/axios',
+    '@nuxtjs/auth-next',
   ],
-
+  axios: {
+    baseURL: 'http://localhost:8000'
+  },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    transpile: ['axios'] 
-  }
+    transpile: ['axios'],
+  },
+
+  auth: {
+    strategies: {
+      local: {
+        scheme: 'refresh',
+        
+        token: {
+          property: 'access',
+          maxAge: 1800,
+          type: 'Bearer'
+        },
+        refreshToken: {
+          property: 'refresh',
+          data: 'refresh',
+          maxAge: 60 * 60 * 24 * 30
+        },
+        user: {
+          property: 'user',
+          autoFetch: true
+        },
+        endpoints: {
+          login: { url: `http://localhost:8000/api/token/`, method: 'post' },
+          refresh: { url: `http://localhost:8000/api/refresh_token/`, method: 'post' },
+          user: { url: `http://localhost:8000/api/profile/`, method: 'get' },
+          logout: false
+        },
+        tokenRequired: true,
+      }
+    }
+  },
 }
 
-// module.exports = {
-//   // ... other Nuxt config
-//   build: {
-//     // ... other build config
-//     transpile: ['axios'] 
-//   }
-// };
+// 'Authorization': `Bearer ${localStorage.getItem('access')}`,
